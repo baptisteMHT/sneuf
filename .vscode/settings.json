@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "c:\\Users\\bapti\\Documents\\dev\\school\\info301\\res\\Keyboard.jar"
+    ]
+}
