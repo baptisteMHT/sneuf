@@ -4,35 +4,38 @@ import java.util.ArrayList;
 
 import com.github.baptistemht.sneuf.client.Booking;
 import com.github.baptistemht.sneuf.client.Client;
+import com.github.baptistemht.sneuf.train.car.Car;
+import com.github.baptistemht.sneuf.train.car.CarClass;
+import com.github.baptistemht.sneuf.train.seat.Seat;
 
 
 public class Train {
 
     private final String id;
-    private final String marque;
+    private final String brand;
 
-    private final int nombrePlaces;
-    private int nombrePlacesDispo;
+    private final int seatsNumber;
+    private int seatsRemaining;
 
-    private final ArrayList<Rame> rames;
-    private final int nombreRames;
+    private final ArrayList<Car> cars;
+    private final int carsNumber;
 
-    private final boolean etage;
+    private final boolean upstair;
 
-    public Train(String id, String marque, int nombrePlaces, int nbRames, boolean etage) {
+    public Train(String id, String brand, int seatsNumber, int nbRames, boolean upstair) {
         this.id                 = id;
-        this.marque             = marque;
+        this.brand              = brand;
 
-        this.nombrePlaces       = nombrePlaces;
-        this.nombrePlacesDispo  = nombrePlaces;
+        this.seatsNumber        = seatsNumber;
+        this.seatsRemaining     = seatsNumber;
 
-        this.rames              = new ArrayList<>();
-        this.nombreRames        = nbRames;
+        this.cars              = new ArrayList<>();
+        this.carsNumber        = nbRames;
 
-        this.etage              = etage;
+        this.upstair           = upstair;
 
         for(int i = 0; i<nbRames; i++){
-            this.rames.add(new Rame(i+1, Math.round(nombrePlaces/nbRames), Classe.SECONDE, etage));
+            this.cars.add(new Car(i+1, Math.round(seatsNumber/nbRames), CarClass.SECOND, upstair));
         }
     }
 
@@ -41,35 +44,35 @@ public class Train {
     }
 
     public String getMarque() {
-        return marque;
+        return brand;
     }
 
     public int getNombrePlaces() {
-        return nombrePlaces;
+        return seatsNumber;
     }
 
     public int getNombrePlacesDispo() {
-        return nombrePlacesDispo;
+        return seatsRemaining;
     }
 
-    public ArrayList<Rame> getRames() {
-        return rames;
+    public ArrayList<Car> getRames() {
+        return cars;
     }
 
     public int getNombreRames() {
-        return nombreRames;
+        return carsNumber;
     }
 
     public boolean isEtage() {
-        return etage;
+        return upstair;
     }
 
-    public Booking book(Client p, Classe classe){
+    public Booking book(Client p, CarClass classe){
         int rame = 0;
         int seat = 0;
-        Siege s = getSiegeFromNumber(rame, seat);
+        Seat s = getSiegeFromNumber(rame, seat);
 
-        while(s.getPersonne() != null){
+        while(s.getClient() != null){
             seat += 1;
             if(seat == 99){
                 rame += 1;
@@ -81,20 +84,20 @@ public class Train {
 
         Booking b = new Booking(this.id, rame+1, seat+1, classe);
 
-        rames.get(rame).getSieges().get(seat).setPersonne(p);
-        this.nombrePlacesDispo-=1;
+        cars.get(rame).getSeats().get(seat).setClient(p);
+        this.seatsRemaining-=1;
         p.getBookings().add(b);
 
         return b;
     }
 
     public void display(){
-        System.out.println("The train is filled up at " + (nombrePlaces-nombrePlacesDispo)/nombrePlaces*100 + "%. " + nombrePlacesDispo + " seats remaining.");
+        System.out.println("The train is filled up at " + (seatsNumber-seatsRemaining)/seatsNumber*100 + "%. " + seatsRemaining + " seats remaining.");
         System.out.println("");
 
-        int nbPlacesParRame = Math.round(nombrePlaces/nombreRames);
+        int nbPlacesParRame = Math.round(seatsNumber/carsNumber);
         
-        for(int i = 0; i<nombreRames; i++){
+        for(int i = 0; i<carsNumber; i++){
             System.out.println("Rame n°"+(i+1));
             System.out.println("      ---------------");
 
@@ -108,9 +111,9 @@ public class Train {
                 for(int k = 0; k<4; k++){
                     int noPlace = j*4 + k;
 
-                    Siege s = getSiegeFromNumber(i, noPlace);
+                    Seat s = getSiegeFromNumber(i, noPlace);
                     if(s != null){
-                        if(s.getPersonne() == null){
+                        if(s.getClient() == null){
                             System.out.print(" . ");   
                         }else{
                             System.out.print(" B ");
@@ -128,13 +131,13 @@ public class Train {
         }
     }
 
-    public Siege getSiegeFromNumber(int rame, int number){
-        return rames.get(rame).getSieges().get(number);
+    public Seat getSiegeFromNumber(int rame, int number){
+        return cars.get(rame).getSeats().get(number);
     }
 
     @Override
     public String toString() {
-        return "Train n°" + id + " from " + marque + " is made of " + nombreRames + " rames. " + (nombrePlaces-nombrePlacesDispo)/nombrePlaces*100 + "% filled.";
+        return "Train n°" + id + " from " + brand + " is made of " + carsNumber + " cars. " + (seatsNumber-seatsRemaining)/seatsNumber*100 + "% filled.";
     }
     
 }

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import com.github.baptistemht.sneuf.client.Booking;
 import com.github.baptistemht.sneuf.client.Client;
-import com.github.baptistemht.sneuf.train.Classe;
 import com.github.baptistemht.sneuf.train.Train;
+import com.github.baptistemht.sneuf.train.car.CarClass;
 
 import in.keyboard.Keyboard;
 
@@ -73,12 +73,12 @@ public class Main {
                     }
 
                     System.out.print("Class (PREMIERE, SECONDE) : ");
-                    Classe classe = Classe.fromString(Keyboard.getString());
+                    CarClass classe = CarClass.fromString(Keyboard.getString());
 
                     while(classe == null){
                         System.out.println("Unknown class.");
                         System.out.print("Class : ");
-                        classe = Classe.fromString(Keyboard.getString());
+                        classe = CarClass.fromString(Keyboard.getString());
                     }
                     
                     Booking b = t.book(c, classe);
